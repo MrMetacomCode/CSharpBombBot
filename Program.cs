@@ -33,7 +33,7 @@ namespace BombBot
                 .BuildServiceProvider();
             string token_ = Environment.GetEnvironmentVariable("C#_BOMBBOT_TOKEN");
             Console.WriteLine($"Token:{token_}");
-            string token = Environment.GetEnvironmentVariable("CSBOMBBOT_DISCORD_TOKEN", EnvironmentVariableTarget.Machine);
+            string token = Environment.GetEnvironmentVariable("CSBOMBBOT_DISCORD_TOKEN", EnvironmentVariableTarget.Process);
 
             _client.Log += _client_Log;
 
