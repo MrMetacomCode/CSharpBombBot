@@ -1,25 +1,31 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\mrmet\\OneDrive\\C# Projects\\BombBot\\BombBot.csproj": {}
+    "C:\\Users\\mrmet\\OneDrive\\C# Projects\\C#BombBot\\BombBot.csproj": {}
   },
   "projects": {
-    "C:\\Users\\mrmet\\OneDrive\\C# Projects\\BombBot\\BombBot.csproj": {
+    "C:\\Users\\mrmet\\OneDrive\\C# Projects\\C#BombBot\\BombBot.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\mrmet\\OneDrive\\C# Projects\\BombBot\\BombBot.csproj",
+        "projectUniqueName": "C:\\Users\\mrmet\\OneDrive\\C# Projects\\C#BombBot\\BombBot.csproj",
         "projectName": "BombBot",
-        "projectPath": "C:\\Users\\mrmet\\OneDrive\\C# Projects\\BombBot\\BombBot.csproj",
+        "projectPath": "C:\\Users\\mrmet\\OneDrive\\C# Projects\\C#BombBot\\BombBot.csproj",
         "packagesPath": "C:\\Users\\mrmet\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\mrmet\\OneDrive\\C# Projects\\BombBot\\obj\\",
+        "outputPath": "C:\\Users\\mrmet\\OneDrive\\C# Projects\\C#BombBot\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\mrmet\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\mrmet\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net5.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -38,9 +44,33 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "dependencies": {
+            "Discord.InteractivityAddon": {
+              "target": "Package",
+              "version": "[2.4.0-dev-20210320.1, )"
+            },
+            "Discord.Net": {
+              "target": "Package",
+              "version": "[2.3.1, )"
+            },
+            "Discord.Net.Core": {
+              "target": "Package",
+              "version": "[2.3.1, )"
+            },
+            "Discord.Net.WebSocket": {
+              "target": "Package",
+              "version": "[2.3.1, )"
+            },
             "Google.Apis.Sheets.v4": {
               "target": "Package",
               "version": "[1.51.0.2272, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[6.0.0-preview.3.21201.4, )"
+            },
+            "System.Threading.Tasks": {
+              "target": "Package",
+              "version": "[4.3.0, )"
             }
           },
           "imports": [
@@ -58,7 +88,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.201\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.300\\RuntimeIdentifierGraph.json"
         }
       }
     }

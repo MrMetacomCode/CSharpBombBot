@@ -1,69 +1,72 @@
-﻿using Google.Apis.Auth.OAuth2;
-using Google.Apis.Sheets.v4;
-using Google.Apis.Sheets.v4.Data;
-using Google.Apis.Services;
-using Google.Apis.Util.Store;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Linq;
+using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
+using System.Threading.Tasks;
+using System.Reflection;
+using Interactivity;
 
 namespace BombBot
 {
     class Program
     {
-        static string[] Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
-        static string ApplicationName = "Google Sheets API .NET Quickstart";
+        static void Main(string[] args) => new Program().RunBotAsync().GetAwaiter().GetResult();
 
-        static void Main(string[] args)
+        private DiscordSocketClient _client;
+        private CommandService _commands;
+        private IServiceProvider _services;
+        
+
+        public async Task RunBotAsync()
         {
-            UserCredential credential;
+            _client = new DiscordSocketClient();
+            _commands = new CommandService(new CommandServiceConfig{DefaultRunMode = RunMode.Async});
+            _services = new ServiceCollection()
+                .AddSingleton(_client)
+                .AddSingleton(_commands)
+                .AddSingleton(new InteractivityService(_client, TimeSpan.FromSeconds(20), false))
+                .BuildServiceProvider();
+            string token_ = Environment.GetEnvironmentVariable("C#_BOMBBOT_TOKEN");
+            Console.WriteLine($"Token:{token_}");
+            string token = Environment.GetEnvironmentVariable("CSBOMBBOT_DISCORD_TOKEN", EnvironmentVariableTarget.Machine);
 
-            using (var stream =
-                new FileStream("credentials.json", FileMode.Open, FileAccess.Read))
+            _client.Log += _client_Log;
+
+            await RegisterCommandsAsync();
+            await _client.LoginAsync(TokenType.Bot, token);
+            await _client.StartAsync();
+            await Task.Delay(-1);
+        }
+
+        private Task _client_Log(LogMessage arg)
+        {
+            Console.WriteLine(arg);
+            return Task.CompletedTask;
+        }
+
+        public async Task RegisterCommandsAsync()
+        {
+            _client.MessageReceived += HandleCommandAsync;
+            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
+        }
+
+        private async Task HandleCommandAsync(SocketMessage arg)
+        {
+            var message = arg as SocketUserMessage;
+            var context = new SocketCommandContext(_client, message);
+            if (message.Author.IsBot) return;
+
+            int argPos = 0;
+            if (message.HasStringPrefix("%", ref argPos))
             {
-                // The file token.json stores the user's access and refresh tokens, and is created
-                // automatically when the authorization flow completes for the first time.
-                string credPath = "token.json";
-                credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
-                    GoogleClientSecrets.Load(stream).Secrets,
-                    Scopes,
-                    "user",
-                    CancellationToken.None,
-                    new FileDataStore(credPath, true)).Result;
-                Console.WriteLine("Credential file saved to: " + credPath);
+                var result = await _commands.ExecuteAsync(context, argPos, _services);
+                if (!result.IsSuccess) Console.WriteLine(result.ErrorReason);
             }
-
-            // Create Google Sheets API service.
-            var service = new SheetsService(new BaseClientService.Initializer()
-            {
-                HttpClientInitializer = credential,
-                ApplicationName = ApplicationName,
-            });
-
-            // Define request parameters.
-            String spreadsheetId = "1S-AIIx2EQrLX8RHJr_AVIGPsQjehEdfUmbwKyinOs_I";
-            String american_bombs = "Bomb Table!B19:Q29";
-            SpreadsheetsResource.ValuesResource.GetRequest request =
-                    service.Spreadsheets.Values.Get(spreadsheetId, american_bombs);
-
-            // Prints the names and majors of students in a sample spreadsheet:
-            // https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-            ValueRange response = request.Execute();
-            IList<IList<Object>> values = response.Values;
-            if (values != null && values.Count > 0)
-            {
-                foreach (var row in values)
-                {
-                    // Print columns A and E, which correspond to indices 0 and 4.
-                    Console.WriteLine("{0}: {1}, {2}, {3}, {4}, {5}, {6}, {7}, {8}", row[0], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10]);
-                }
-            }
-            else
-            {
-                Console.WriteLine("No data found.");
-            }
-            Console.Read();
         }
     }
 }
